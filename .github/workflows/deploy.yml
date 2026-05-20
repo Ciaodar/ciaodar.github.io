@@ -35,6 +35,8 @@ jobs:
 
       - name: Build
         run: yarn build
+        env:
+          NODE_OPTIONS: --openssl-legacy-provider
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
