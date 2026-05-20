@@ -6,7 +6,7 @@ module.exports = {
     description:
       'I develop games, game mechanics, game designs, and game mods. I am highly proficient in Unity, general computer graphics principles, and backend development.',
     siteUrl: 'https://ciaodar.github.io', // No trailing slash allowed!
-    image: '/og.png', // Path to your image you placed in the 'static' folder
+    image: '/thumbss.png', // Path to your image you placed in the 'static' folder
     twitterUsername: '',
   },
   plugins: [
