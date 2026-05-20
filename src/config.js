@@ -1,26 +1,22 @@
 module.exports = {
-  email: 'brittany.chiang@gmail.com',
+  email: 'gliencherth@gmail.com',
 
   socialMedia: [
     {
       name: 'GitHub',
-      url: 'https://github.com/bchiang7',
-    },
-    {
-      name: 'Instagram',
-      url: 'https://www.instagram.com/bchiang7',
-    },
-    {
-      name: 'Twitter',
-      url: 'https://twitter.com/bchiang7',
+      url: 'https://github.com/ciaodar',
     },
     {
       name: 'Linkedin',
-      url: 'https://www.linkedin.com/in/bchiang7',
+      url: 'https://linkedin.com/in/ciaodar',
     },
     {
-      name: 'Codepen',
-      url: 'https://codepen.io/bchiang7',
+      name: 'ItchIo',
+      url: 'https://ciaodar.itch.io',
+    },
+    {
+      name: 'NexusMods',
+      url: 'https://www.nexusmods.com/profile/Ciaodar/mods',
     },
   ],
 
@@ -44,7 +40,7 @@ module.exports = {
   ],
 
   colors: {
-    green: '#64ffda',
+    green: '#00e5ff',
     navy: '#0a192f',
     darkNavy: '#020c1b',
   },

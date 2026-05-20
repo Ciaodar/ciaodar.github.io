@@ -7,7 +7,7 @@ import { navLinks } from '@config';
 import { loaderDelay } from '@utils';
 import { useScrollDirection, usePrefersReducedMotion } from '@hooks';
 import { Menu } from '@components';
-import { IconLogo, IconHex } from '@components/icons';
+import { IconLogo } from '@components/icons';
 
 const StyledHeader = styled.header`
   ${({ theme }) => theme.mixins.flexBetween};
@@ -67,42 +67,32 @@ const StyledNav = styled.nav`
 
     a {
       color: var(--green);
-      width: 42px;
-      height: 42px;
+      width: 60px;
+      height: 60px;
       position: relative;
       z-index: 1;
-
-      .hex-container {
-        position: absolute;
-        top: 0;
-        left: 0;
-        z-index: -1;
-        @media (prefers-reduced-motion: no-preference) {
-          transition: var(--transition);
-        }
-      }
+      display: flex;
+      align-items: center;
+      justify-content: center;
 
       .logo-container {
         position: relative;
         z-index: 1;
-        svg {
-          fill: none;
-          user-select: none;
-          @media (prefers-reduced-motion: no-preference) {
-            transition: var(--transition);
-          }
-          polygon {
-            fill: var(--navy);
-          }
-        }
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4px;
+        transition: transform 0.5s ease-in-out, filter 0.5s ease-in-out;
       }
 
       &:hover,
       &:focus {
         outline: 0;
-        transform: translate(-4px, -4px);
-        .hex-container {
-          transform: translate(4px, 3px);
+        .logo-container {
+          transform: rotate(90deg);
+          filter: drop-shadow(0 0 10px rgba(0, 229, 255, 0.5));
         }
       }
     }
@@ -150,7 +140,15 @@ const StyledLinks = styled.div`
   }
 `;
 
-const Nav = ({ isHome }) => {
+const Nav = ({ isHome, lang = 'en' }) => {
+  const isTr = lang === 'tr';
+  const trNavLinks = [
+    { name: 'Hakkımda', url: '/tr/#about' },
+    { name: 'Deneyim', url: '/tr/#jobs' },
+    { name: 'Projeler', url: '/tr/#projects' },
+    { name: 'İletişim', url: '/tr/#contact' },
+  ];
+  const linksToUse = isTr ? trNavLinks : navLinks;
   const [isMounted, setIsMounted] = useState(!isHome);
   const scrollDirection = useScrollDirection('down');
   const [scrolledToTop, setScrolledToTop] = useState(true);
@@ -184,19 +182,13 @@ const Nav = ({ isHome }) => {
   const Logo = (
     <div className="logo" tabIndex="-1">
       {isHome ? (
-        <a href="/" aria-label="home">
-          <div className="hex-container">
-            <IconHex />
-          </div>
+        <a href={isTr ? '/tr' : '/'} aria-label="home">
           <div className="logo-container">
             <IconLogo />
           </div>
         </a>
       ) : (
-        <Link to="/" aria-label="home">
-          <div className="hex-container">
-            <IconHex />
-          </div>
+        <Link to={isTr ? '/tr' : '/'} aria-label="home">
           <div className="logo-container">
             <IconLogo />
           </div>
@@ -206,9 +198,14 @@ const Nav = ({ isHome }) => {
   );
 
   const ResumeLink = (
-    <a className="resume-button" href="/resume.pdf" target="_blank" rel="noopener noreferrer">
-      Resume
-    </a>
+    <div style={{ display: 'flex', alignItems: 'center' }}>
+      <Link className="resume-button" to={isTr ? '/' : '/tr'} style={{ padding: '0.75rem 1rem' }}>
+        {isTr ? 'EN' : 'TR'}
+      </Link>
+      <a className="resume-button" href="/resume.pdf" target="_blank" rel="noopener noreferrer">
+        {isTr ? 'Özgeçmiş' : 'Resume'}
+      </a>
+    </div>
   );
 
   return (
@@ -220,8 +217,8 @@ const Nav = ({ isHome }) => {
 
             <StyledLinks>
               <ol>
-                {navLinks &&
-                  navLinks.map(({ url, name }, i) => (
+                {linksToUse &&
+                  linksToUse.map(({ url, name }, i) => (
                     <li key={i}>
                       <Link to={url}>{name}</Link>
                     </li>
@@ -246,8 +243,8 @@ const Nav = ({ isHome }) => {
               <ol>
                 <TransitionGroup component={null}>
                   {isMounted &&
-                    navLinks &&
-                    navLinks.map(({ url, name }, i) => (
+                    linksToUse &&
+                    linksToUse.map(({ url, name }, i) => (
                       <CSSTransition key={i} classNames={fadeDownClass} timeout={timeout}>
                         <li key={i} style={{ transitionDelay: `${isHome ? i * 100 : 0}ms` }}>
                           <Link to={url}>{name}</Link>
@@ -284,6 +281,7 @@ const Nav = ({ isHome }) => {
 
 Nav.propTypes = {
   isHome: PropTypes.bool,
+  lang: PropTypes.string,
 };
 
 export default Nav;

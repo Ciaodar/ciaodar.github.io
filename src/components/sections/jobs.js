@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import PropTypes from 'prop-types';
 import { useStaticQuery, graphql } from 'gatsby';
 import { CSSTransition } from 'react-transition-group';
 import styled from 'styled-components';
@@ -164,11 +165,11 @@ const StyledTabPanel = styled.div`
   }
 `;
 
-const Jobs = () => {
+const Jobs = ({ lang = 'en' }) => {
   const data = useStaticQuery(graphql`
     query {
       jobs: allMarkdownRemark(
-        filter: { fileAbsolutePath: { regex: "/content/jobs/" } }
+        filter: { fileAbsolutePath: { regex: "/jobs/" } }
         sort: { fields: [frontmatter___date], order: DESC }
       ) {
         edges {
@@ -181,13 +182,17 @@ const Jobs = () => {
               url
             }
             html
+            fileAbsolutePath
           }
         }
       }
     }
   `);
 
-  const jobsData = data.jobs.edges;
+  const isTr = lang === 'tr';
+  const jobsData = data.jobs.edges.filter(({ node }) =>
+    isTr ? node.fileAbsolutePath.includes('/tr/') : !node.fileAbsolutePath.includes('/tr/'),
+  );
 
   const [activeTabId, setActiveTabId] = useState(0);
   const [tabFocus, setTabFocus] = useState(null);
@@ -244,7 +249,7 @@ const Jobs = () => {
 
   return (
     <StyledJobsSection id="jobs" ref={revealContainer}>
-      <h2 className="numbered-heading">Where I’ve Worked</h2>
+      <h2 className="numbered-heading">{isTr ? 'Çalıştığım Yerler' : 'Where I’ve Worked'}</h2>
 
       <div className="inner">
         <StyledTabList role="tablist" aria-label="Job tabs" onKeyDown={e => onKeyDown(e)}>
@@ -305,6 +310,10 @@ const Jobs = () => {
       </div>
     </StyledJobsSection>
   );
+};
+
+Jobs.propTypes = {
+  lang: PropTypes.string,
 };
 
 export default Jobs;

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import PropTypes from 'prop-types';
 import { useStaticQuery, graphql } from 'gatsby';
 import { GatsbyImage, getImage } from 'gatsby-plugin-image';
 import styled from 'styled-components';
@@ -42,7 +43,7 @@ const StyledProject = styled.li`
   &:nth-of-type(odd) {
     .project-content {
       grid-column: 7 / -1;
-      text-align: right;
+      text-align: left;
 
       @media (max-width: 1080px) {
         grid-column: 5 / -1;
@@ -303,11 +304,11 @@ const StyledProject = styled.li`
   }
 `;
 
-const Featured = () => {
+const Featured = ({ lang = 'en' }) => {
   const data = useStaticQuery(graphql`
     {
       featured: allMarkdownRemark(
-        filter: { fileAbsolutePath: { regex: "/content/featured/" } }
+        filter: { fileAbsolutePath: { regex: "/featured/" } }
         sort: { fields: [frontmatter___date], order: ASC }
       ) {
         edges {
@@ -315,6 +316,7 @@ const Featured = () => {
             frontmatter {
               title
               cover {
+                publicURL
                 childImageSharp {
                   gatsbyImageData(width: 700, placeholder: BLURRED, formats: [AUTO, WEBP, AVIF])
                 }
@@ -322,16 +324,22 @@ const Featured = () => {
               tech
               github
               external
-              cta
+              youtube
             }
             html
+            fileAbsolutePath
           }
         }
       }
     }
   `);
 
-  const featuredProjects = data.featured.edges.filter(({ node }) => node);
+  const isTr = lang === 'tr';
+  const featuredProjects = data.featured.edges
+    .filter(({ node }) => node)
+    .filter(({ node }) =>
+      isTr ? node.fileAbsolutePath.includes('/tr/') : !node.fileAbsolutePath.includes('/tr/'),
+    );
   const revealTitle = useRef(null);
   const revealProjects = useRef([]);
   const prefersReducedMotion = usePrefersReducedMotion();
@@ -348,21 +356,24 @@ const Featured = () => {
   return (
     <section id="projects">
       <h2 className="numbered-heading" ref={revealTitle}>
-        Some Things I’ve Built
+        {isTr ? 'Geliştirdiğim Bazı Projeler' : 'Some Things I’ve Built'}
       </h2>
 
       <StyledProjectsGrid>
         {featuredProjects &&
           featuredProjects.map(({ node }, i) => {
             const { frontmatter, html } = node;
-            const { external, title, tech, github, cover, cta } = frontmatter;
+            const { external, title, tech, github, cover, youtube } = frontmatter;
             const image = getImage(cover);
+            const isGif = cover?.publicURL?.endsWith('.gif');
 
             return (
               <StyledProject key={i} ref={el => (revealProjects.current[i] = el)}>
                 <div className="project-content">
                   <div>
-                    <p className="project-overline">Featured Project</p>
+                    <p className="project-overline">
+                      {isTr ? 'Öne Çıkan Proje' : 'Featured Project'}
+                    </p>
 
                     <h3 className="project-title">
                       <a href={external}>{title}</a>
@@ -382,19 +393,19 @@ const Featured = () => {
                     )}
 
                     <div className="project-links">
-                      {cta && (
-                        <a href={cta} aria-label="Course Link" className="cta">
-                          Learn More
-                        </a>
-                      )}
                       {github && (
                         <a href={github} aria-label="GitHub Link">
                           <Icon name="GitHub" />
                         </a>
                       )}
-                      {external && !cta && (
+                      {external && (
                         <a href={external} aria-label="External Link" className="external">
                           <Icon name="External" />
+                        </a>
+                      )}
+                      {youtube && (
+                        <a href={youtube} aria-label="YouTube Link" className="external">
+                          <Icon name="YouTube" />
                         </a>
                       )}
                     </div>
@@ -403,7 +414,11 @@ const Featured = () => {
 
                 <div className="project-image">
                   <a href={external ? external : github ? github : '#'}>
-                    <GatsbyImage image={image} alt={title} className="img" />
+                    {isGif ? (
+                      <img src={cover.publicURL} alt={title} className="img" />
+                    ) : (
+                      <GatsbyImage image={image} alt={title} className="img" />
+                    )}
                   </a>
                 </div>
               </StyledProject>
@@ -412,6 +427,10 @@ const Featured = () => {
       </StyledProjectsGrid>
     </section>
   );
+};
+
+Featured.propTypes = {
+  lang: PropTypes.string,
 };
 
 export default Featured;

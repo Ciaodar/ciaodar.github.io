@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import PropTypes from 'prop-types';
 import { Link, useStaticQuery, graphql } from 'gatsby';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import styled from 'styled-components';
@@ -165,12 +166,12 @@ const StyledProject = styled.li`
   }
 `;
 
-const Projects = () => {
+const Projects = ({ lang = 'en' }) => {
   const data = useStaticQuery(graphql`
     query {
       projects: allMarkdownRemark(
         filter: {
-          fileAbsolutePath: { regex: "/content/projects/" }
+          fileAbsolutePath: { regex: "/projects/" }
           frontmatter: { showInProjects: { ne: false } }
         }
         sort: { fields: [frontmatter___date], order: DESC }
@@ -182,8 +183,10 @@ const Projects = () => {
               tech
               github
               external
+              youtube
             }
             html
+            fileAbsolutePath
           }
         }
       }
@@ -207,13 +210,18 @@ const Projects = () => {
   }, []);
 
   const GRID_LIMIT = 6;
-  const projects = data.projects.edges.filter(({ node }) => node);
+  const isTr = lang === 'tr';
+  const projects = data.projects.edges
+    .filter(({ node }) => node)
+    .filter(({ node }) =>
+      isTr ? node.fileAbsolutePath.includes('/tr/') : !node.fileAbsolutePath.includes('/tr/'),
+    );
   const firstSix = projects.slice(0, GRID_LIMIT);
   const projectsToShow = showMore ? projects : firstSix;
 
   const projectInner = node => {
     const { frontmatter, html } = node;
-    const { github, external, title, tech } = frontmatter;
+    const { github, external, title, tech, youtube } = frontmatter;
 
     return (
       <div className="project-inner">
@@ -236,6 +244,16 @@ const Projects = () => {
                   target="_blank"
                   rel="noreferrer">
                   <Icon name="External" />
+                </a>
+              )}
+              {youtube && (
+                <a
+                  href={youtube}
+                  aria-label="YouTube Link"
+                  className="external"
+                  target="_blank"
+                  rel="noreferrer">
+                  <Icon name="YouTube" />
                 </a>
               )}
             </div>
@@ -265,10 +283,13 @@ const Projects = () => {
 
   return (
     <StyledProjectsSection>
-      <h2 ref={revealTitle}>Other Noteworthy Projects</h2>
+      <h2 ref={revealTitle}>{isTr ? 'Diğer Projelerim' : 'Other Noteworthy Projects'}</h2>
 
-      <Link className="inline-link archive-link" to="/archive" ref={revealArchiveLink}>
-        view the archive
+      <Link
+        className="inline-link archive-link"
+        to={isTr ? '/tr/archive' : '/archive'}
+        ref={revealArchiveLink}>
+        {isTr ? 'arşive göz at' : 'view the archive'}
       </Link>
 
       <ul className="projects-grid">
@@ -303,10 +324,18 @@ const Projects = () => {
       </ul>
 
       <button className="more-button" onClick={() => setShowMore(!showMore)}>
-        Show {showMore ? 'Less' : 'More'}
+        {isTr
+          ? showMore
+            ? 'Daha Az Göster'
+            : 'Daha Fazla Göster'
+          : `Show ${showMore ? 'Less' : 'More'}`}
       </button>
     </StyledProjectsSection>
   );
+};
+
+Projects.propTypes = {
+  lang: PropTypes.string,
 };
 
 export default Projects;

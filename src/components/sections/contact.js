@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { srConfig, email } from '@config';
 import sr from '@utils/sr';
@@ -41,7 +42,8 @@ const StyledContactSection = styled.section`
   }
 `;
 
-const Contact = () => {
+const Contact = ({ lang = 'en' }) => {
+  const isTr = lang === 'tr';
   const revealContainer = useRef(null);
   const prefersReducedMotion = usePrefersReducedMotion();
 
@@ -55,20 +57,38 @@ const Contact = () => {
 
   return (
     <StyledContactSection id="contact" ref={revealContainer}>
-      <h2 className="numbered-heading overline">What’s Next?</h2>
+      <h2 className="numbered-heading overline">{isTr ? 'Sırada Ne Var?' : 'What’s Next?'}</h2>
 
-      <h2 className="title">Get In Touch</h2>
+      <h2 className="title">{isTr ? 'İletişime Geç' : 'Get In Touch'}</h2>
 
       <p>
-        Although I’m not currently looking for any new opportunities, my inbox is always open.
-        Whether you have a question or just want to say hi, I’ll try my best to get back to you!
+        {isTr
+          ? 'Şu anda yeni fırsatlara açığım, mesaj kutum her zaman açıktır.'
+          : 'I’m currently looking for any new opportunities, my inbox is always open.'}
       </p>
 
-      <a className="email-link" href={`mailto:${email}`}>
-        Say Hello
-      </a>
+      <div
+        style={{
+          display: 'flex',
+          gap: '15px',
+          flexWrap: 'wrap',
+          justifyContent: 'center',
+          marginTop: '50px',
+        }}>
+        <a className="email-link" href={`mailto:${email}`} style={{ marginTop: 0 }}>
+          {isTr ? 'E-Posta Gönder' : 'Send E-Mail'}
+        </a>
+
+        <a className="email-link" href={`https://wa.me/905010168608`} style={{ marginTop: 0 }}>
+          {isTr ? 'WhatsApp Mesajı Gönder' : 'Send WhatsApp Message'}
+        </a>
+      </div>
     </StyledContactSection>
   );
+};
+
+Contact.propTypes = {
+  lang: PropTypes.string,
 };
 
 export default Contact;

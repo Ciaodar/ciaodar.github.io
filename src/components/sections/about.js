@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import PropTypes from 'prop-types';
 import { StaticImage } from 'gatsby-plugin-image';
 import styled from 'styled-components';
 import { srConfig } from '@config';
@@ -113,7 +114,8 @@ const StyledPic = styled.div`
   }
 `;
 
-const About = () => {
+const About = ({ lang = 'en' }) => {
+  const isTr = lang === 'tr';
   const revealContainer = useRef(null);
   const prefersReducedMotion = usePrefersReducedMotion();
 
@@ -125,43 +127,70 @@ const About = () => {
     sr.reveal(revealContainer.current, srConfig());
   }, []);
 
-  const skills = ['JavaScript (ES6+)', 'TypeScript', 'React', 'Eleventy', 'Node.js', 'WordPress'];
+  const skills = [
+    'Unity',
+    'C#',
+    'Backend Development',
+    'Game Design',
+    'Computer Graphics',
+    'Bannerlord Modding',
+  ];
 
   return (
     <StyledAboutSection id="about" ref={revealContainer}>
-      <h2 className="numbered-heading">About Me</h2>
+      <h2 className="numbered-heading">{isTr ? 'Hakkımda' : 'About Me'}</h2>
 
       <div className="inner">
         <StyledText>
           <div>
-            <p>
-              Hello! My name is Brittany and I enjoy creating things that live on the internet. My
-              interest in web development started back in 2012 when I decided to try editing custom
-              Tumblr themes — turns out hacking together a custom reblog button taught me a lot
-              about HTML &amp; CSS!
-            </p>
+            {isTr ? (
+              <>
+                <p>
+                  Gazi Üniversitesinde son sınıf Bilgisayar Mühendisliği öğrencisiyim. Bugüne kadar
+                  20'den fazla game jam'e katıldım ve her yıl Aralık ayında düzenlediğimiz
+                  &quot;Ayaz Jam&quot; etkinliğini iki kez organize ettim.
+                </p>
 
-            <p>
-              Fast-forward to today, and I’ve had the privilege of working at{' '}
-              <a href="https://us.mullenlowe.com/">an advertising agency</a>,{' '}
-              <a href="https://starry.com/">a start-up</a>,{' '}
-              <a href="https://www.apple.com/">a huge corporation</a>, and{' '}
-              <a href="https://scout.camd.northeastern.edu/">a student-led design studio</a>. My
-              main focus these days is building accessible, inclusive products and digital
-              experiences at <a href="https://upstatement.com/">Upstatement</a> for a variety of
-              clients.
-            </p>
+                <p>
+                  Oyun geliştirme serüvenim lise yıllarımda başladı. İlk oyunumu bir{' '}
+                  <code>.bat</code> dosyasında yazıp kayıt sistemi olarak da basit bir metin dosyası
+                  kullanmıştım! Daha sonra lise eğitimime odaklanarak oyun geliştirme tutkumu
+                  üniversite yıllarına erteledim. Üniversiteye geldiğimde Oyun Topluluğu, Kutu
+                  Oyunları Topluluğu ve ACM gibi topluluklarla tanıştım ve bu topluluklarda başkan,
+                  başkan yardımcısı ve birim başkanı gibi aktif liderlik rolleri üstlendim.
+                </p>
 
-            <p>
-              I also recently{' '}
-              <a href="https://www.newline.co/courses/build-a-spotify-connected-app">
-                launched a course
-              </a>{' '}
-              that covers everything you need to build a web app with the Spotify API using Node
-              &amp; React.
-            </p>
+                <p>
+                  Şu sıralar Mount &amp; Blade Bannerlord modları geliştirmekle yakından
+                  ilgileniyorum.
+                </p>
 
-            <p>Here are a few technologies I’ve been working with recently:</p>
+                <p>Son zamanlarda üzerinde çalıştığım teknolojiler ve alanlar:</p>
+              </>
+            ) : (
+              <>
+                <p>
+                  I am a senior Computer Engineering student at Gazi University. I have participated
+                  in over 20 game jams and twice organized &quot;Ayaz Jam&quot;, an event we hold
+                  every December.
+                </p>
+
+                <p>
+                  My journey in game development started in high school. I wrote my first game in a{' '}
+                  <code>.bat</code> file and used a simple text file for the save system! Afterward,
+                  I focused on my high school studies and postponed my passion for game development
+                  until university. There, I was introduced to communities like the Gaming Club,
+                  Board Games Club, and ACM, where I took on active leadership roles including
+                  president, vice president, and unit head.
+                </p>
+
+                <p>
+                  Currently, I'm highly interested in developing Mount &amp; Blade Bannerlord mods.
+                </p>
+
+                <p>Here are a few technologies and domains I’ve been working with recently:</p>
+              </>
+            )}
           </div>
 
           <ul className="skills-list">
@@ -184,6 +213,10 @@ const About = () => {
       </div>
     </StyledAboutSection>
   );
+};
+
+About.propTypes = {
+  lang: PropTypes.string,
 };
 
 export default About;

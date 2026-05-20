@@ -9,12 +9,15 @@ import {
   IconFork,
   IconGitHub,
   IconInstagram,
+  IconItchIo,
   IconLinkedin,
   IconLoader,
   IconLogo,
+  IconNexusMods,
   IconPlayStore,
   IconStar,
   IconTwitter,
+  IconYouTube,
 } from '@components/icons';
 
 const Icon = ({ name }) => {
@@ -35,18 +38,24 @@ const Icon = ({ name }) => {
       return <IconGitHub />;
     case 'Instagram':
       return <IconInstagram />;
+    case 'ItchIo':
+      return <IconItchIo />;
     case 'Linkedin':
       return <IconLinkedin />;
     case 'Loader':
       return <IconLoader />;
     case 'Logo':
       return <IconLogo />;
+    case 'NexusMods':
+      return <IconNexusMods />;
     case 'PlayStore':
       return <IconPlayStore />;
     case 'Star':
       return <IconStar />;
     case 'Twitter':
       return <IconTwitter />;
+    case 'YouTube':
+      return <IconYouTube />;
     default:
       return <IconExternal />;
   }

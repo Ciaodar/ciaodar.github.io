@@ -10,8 +10,9 @@ const StyledContent = styled.div`
   min-height: 100vh;
 `;
 
-const Layout = ({ children, location }) => {
-  const isHome = location.pathname === '/';
+const Layout = ({ children, location, lang = 'en' }) => {
+  const isHome =
+    location.pathname === '/' || location.pathname === '/tr' || location.pathname === '/tr/';
   const [isLoading, setIsLoading] = useState(isHome);
 
   // Sets target="_blank" rel="noopener noreferrer" on external links
@@ -62,7 +63,7 @@ const Layout = ({ children, location }) => {
             <Loader finishLoading={() => setIsLoading(false)} />
           ) : (
             <StyledContent>
-              <Nav isHome={isHome} />
+              <Nav isHome={isHome} lang={lang} />
               <Social isHome={isHome} />
               <Email isHome={isHome} />
 
@@ -81,6 +82,7 @@ const Layout = ({ children, location }) => {
 Layout.propTypes = {
   children: PropTypes.node.isRequired,
   location: PropTypes.object.isRequired,
+  lang: PropTypes.string,
 };
 
 export default Layout;
